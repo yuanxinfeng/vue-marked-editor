@@ -1,0 +1,5 @@
+{
+    "count-up": "./packages/count-up/index.js",
+    "verify-code": "./packages/verify-code/index.js",
+    "v-charts": "./packages/v-charts/index.js"
+}

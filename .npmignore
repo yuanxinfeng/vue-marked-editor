@@ -1,0 +1,33 @@
+.DS_Store
+node_modules
+/lib/*.umd.js
+/lib/*.umd.*.js
+/tests
+/docs
+/src
+vue.config.js
+babel.config.js
+compontents.json
+*.map
+*.html
+.browserslistrc
+.eslintrc.js
+jest.config.js
+package-lock.json
+postcss.config.js
+# local env files
+.env.local
+.env.*.local
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
