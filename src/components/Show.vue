@@ -15,12 +15,26 @@
 </template>
 
 <script>
+import { setTimeout } from "timers";
 export default {
   name: "Show",
   data() {
     return {
-      desc: ""
+      desc: "123"
     };
+  },
+  created() {
+    this.$nextTick(() => {
+      setTimeout(() => {
+        console.log(11111);
+        this.desc = "321";
+      }, 1000);
+    });
+  },
+  mounted() {
+    setTimeout(() => {
+      this.desc = "456";
+    }, 2000);
   },
   methods: {
     childEventHandler(res) {

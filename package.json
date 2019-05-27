@@ -1,9 +1,10 @@
 {
   "name": "vue-marked-editor",
-  "version": "0.0.2",
+  "version": "0.0.6",
   "private": false,
   "main": "lib/vue-marked-editor.common.js",
-  "description": "A markeddown Component Library for Vue.js.",
+  "description": "A markdown Component Library for Vue.js.",
+  "keywords": ["marked, markdown, vue-marked"],
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",

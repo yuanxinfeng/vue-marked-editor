@@ -52,7 +52,7 @@
         </ul>
       </div>
     </div>
-    <div class="mdBodyContainer" :class="{ noMenu: !navStatus }">
+    <div class="mdBodyContainer" :class="[{noMenu:!navStatus},{mdBodyFullPage:fullPageStatus}]">
       <div class="editContainer" v-if="editStatus">
         <textarea name class="mdEditor" @keydown.9="tabFn" v-scroll="editScroll" v-model="input"></textarea>
       </div>
@@ -69,11 +69,11 @@
 <script>
 import marked from "marked";
 
+import "font-awesome/css/font-awesome.min.css";
+
 import "../../../src/assets/css/github-markdown.css";
 /*引入atom的代码高亮样式文件*/
 import "../../../src/assets/css/atom.min.css";
-
-import "font-awesome/css/font-awesome.min.css";
 
 import hljs from "highlight.js";
 import range from "../../../src/utils/rangeFn";
@@ -89,9 +89,9 @@ marked.setOptions({
   renderer: renderer,
   gfm: true,
   tables: true,
-  breaks: false,
+  breaks: true,
   pedantic: false,
-  sanitize: true,
+  sanitize: false,
   smartLists: true,
   smartypants: false,
   highlight: function(code) {
@@ -146,50 +146,15 @@ export default {
   methods: {
     tabFn: function(evt) {
       insertContent("    ", this);
-      // 屏蔽屌tab切换事件
+      // 屏蔽掉tab切换事件
       if (evt.preventDefault) {
         evt.preventDefault();
       } else {
         evt.returnValue = false;
       }
     },
-    addImage: function(cmd) {
-      if (cmd === "online") {
-        this.$prompt("请输入图片地址", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          inputPattern: /^http:\/\/.+\..+/i,
-          inputErrorMessage: "图片地址不正确"
-        })
-          .then(({ value }) => {
-            insertContent(`![Vue](${value})`, this);
-          })
-          .catch(() => {
-            this.$message({
-              type: "info",
-              message: "取消输入"
-            });
-          });
-      }
-    },
-    beforeUpload: function(file) {
-      console.log(file);
-      const isJPG = file.type === "image/jpeg" || file.type === "image/png";
-      const isLt2M = file.size / 1024 / 1024 < 1.5;
-
-      if (!isJPG) {
-        this.$message.error("上传头像图片只能是 JPG/PNG 格式!");
-      }
-      if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 1.5MB!");
-      }
-      return isJPG && isLt2M;
-    },
-    addUpImag: function(req, file, fileList) {
-      console.log(req.files.file);
-      let path = req.files.file.path.split("static/")[1];
-      let value = `${location.origin}/${path}`;
-      insertContent(`![Vue](${value})`, this);
+    addImage: function() {
+      insertContent("![Vue](https://cn.vuejs.org/images/logo.png)", this);
     },
     addHTitle: function(index) {
       let tmp = "";
@@ -318,14 +283,6 @@ export default {
     },
     fullPageFn: function() {
       this.fullPageStatus = !this.fullPageStatus;
-      let maxEditScrollHeight =
-        document.querySelector(".mdEditor").scrollHeight -
-        document.querySelector(".mdEditor").clientHeight;
-      let maxPreviewScrollHeight =
-        document.querySelector(".previewContainer").scrollHeight -
-        document.querySelector(".previewContainer").clientHeight;
-      this.maxEditScrollHeight = maxEditScrollHeight;
-      this.maxPreviewScrollHeight = maxPreviewScrollHeight;
     },
     previewScroll: function(e, position) {
       if (this.maxEditScrollHeight !== 0) {
@@ -344,8 +301,23 @@ export default {
     watchData() {
       let index = -1;
       renderer.heading = function(text, level) {
-        console.log(index);
         return `<h${level} id="titleAnchor-${index++}">${text}</h${level}>`;
+      };
+      renderer.link = (href, title, text) => {
+        return `<a href="${href}"
+             target="${href.substr(0, 1) === "#" ? "_self" : "_blank"}" 
+             class="${href.substr(0, 1) === "#" ? "" : "c-link"}"
+             title="访问 ${text} | Welcome to Pawn's blog!">
+             ${
+               href.substr(0, 1) === "#"
+                 ? text
+                 : text.length > 40
+                 ? text.slice(0, 40) + "..."
+                 : text
+             }
+          </a>`
+          .replace(/\s+/g, " ")
+          .replace("\n", "");
       };
 
       let data = {};
@@ -388,12 +360,15 @@ export default {
           return hljs.highlightAuto(code).value;
         }
       });
+    },
+    mdValuesP: function(val) {
+      this.input = val;
     }
   }
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .mdContainer {
   width: 100%;
   height: 100%;
@@ -461,6 +436,9 @@ export default {
       height: 100%;
     }
   }
+  .mdBodyFullPage {
+    height: 100% !important;
+  }
 }
 
 // 编辑区域
@@ -490,5 +468,6 @@ export default {
   background: #fff;
   overflow: auto;
   padding: 10px;
+  text-align: left;
 }
 </style>

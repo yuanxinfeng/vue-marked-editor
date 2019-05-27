@@ -1,6 +1,6 @@
 # vue-marked-editor
 
-[docs](https://blog.yuanxinfeng.xyz)
+[docs](https://blog.yuanxinfeng.xyz/article?id=5ceb46b89fc397692b12b37c)
 
 ## Install
 
@@ -18,3 +18,7 @@ Vue.use(vueMarkedEditor);
 ```
 ## LICENSE
 [MIT](LICENSE)
+
+## GITHUB
+[vue-marked-editor](https://github.com/MoziWriteCode/vue-marked-editor)
+Welcome to star !!!
