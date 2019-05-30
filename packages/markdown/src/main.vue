@@ -375,9 +375,9 @@ export default {
       }
     },
     watchData() {
-      let index = -1;
+      let index = 0;
       renderer.heading = function(text, level) {
-        return `<h${level} id="titleAnchor-${index++}">${text}</h${level}>`;
+        return `<h${level} id="titleAnchor-${index++}">${text}</h${level}>\n`;
       };
       renderer.link = (href, title, text) => {
         return `<a href="${href}"
@@ -515,7 +515,7 @@ export default {
               line-height: 35px;
               font-size: 12px;
               transition: all 0.2s linear 0s;
-              .span_center{
+              .span_center {
                 display: block;
                 text-align: center;
               }
