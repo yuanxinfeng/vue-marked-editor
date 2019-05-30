@@ -14,7 +14,6 @@
         @delImage="delIMage"
       ></y-markdown>
     </div>
-    <img :src="image" alt>
   </div>
 </template>
 
