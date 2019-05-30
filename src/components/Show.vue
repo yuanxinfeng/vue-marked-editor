@@ -2,6 +2,7 @@
   <div class="hello">
     <div height="400px">
       <y-markdown
+        ref="markdown"
         :mdValuesP="desc"
         :fullPageStatusP="false"
         :editStatusP="true"
@@ -9,36 +10,73 @@
         :navStatusP="true"
         :icoStatusP="true"
         @childevent="childEventHandler"
+        @imgAdd="imgAdd"
+        @delImage="delIMage"
       ></y-markdown>
     </div>
+    <img :src="image" alt>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 import { setTimeout } from "timers";
 export default {
   name: "Show",
   data() {
     return {
-      desc: "123"
+      desc: "",
+      image: ""
     };
   },
   created() {
-    this.$nextTick(() => {
-      setTimeout(() => {
-        console.log(11111);
-        this.desc = "321";
-      }, 1000);
-    });
+    this.$nextTick(() => {});
   },
-  mounted() {
-    setTimeout(() => {
-      this.desc = "456";
-    }, 2000);
-  },
+  mounted() {},
   methods: {
     childEventHandler(res) {
-      console.log(res);
+    },
+    imgAdd(file) {
+      var formdata = new FormData();
+      formdata.append("file", file);
+      axios({
+        url: "http://127.0.0.1:10000/api/uploadImage/add",
+        method: "post",
+        data: formdata,
+        headers: {
+          "Content-Type":
+            "multipart/form-data;boundary = " + new Date().getTime(),
+          Authorization:
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYWRtaW4iLCJpYXQiOjE1NTkyMDExODIsImV4cCI6MTU1OTIwNDc4Mn0.7PXHlgjpU2qwcA2lhbgI9Tx_hHgtyvO1k4bsyjzAaAY"
+        }
+      })
+        .then(res => {
+          console.log(res);
+          this.image = res.data.data.file_url;
+          let imageid = res.data.data._id;
+          let obj = { name: file.name, url: this.image, id: imageid };
+          this.$refs["markdown"].$callbackAddImage(obj);
+        })
+        .catch(error => {
+          console.log("image upload error", error);
+        });
+    },
+    delIMage(image) {
+      axios({
+        url: "http://127.0.0.1:10000/api/uploadImage/del",
+        method: "post",
+        params: { id: image.id },
+        headers: {
+          Authorization:
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYWRtaW4iLCJpYXQiOjE1NTkyMDExODIsImV4cCI6MTU1OTIwNDc4Mn0.7PXHlgjpU2qwcA2lhbgI9Tx_hHgtyvO1k4bsyjzAaAY"
+        }
+      })
+        .then(res => {
+          console.log(res);
+        })
+        .catch(error => {
+          console.log("image upload error", error);
+        });
     }
   }
 };

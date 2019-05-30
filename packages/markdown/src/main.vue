@@ -2,54 +2,91 @@
   <div class="mdContainer" :class="{ fullPage: fullPageStatus }">
     <div class="navContainer" v-if="navStatus">
       <div class="markContainer">
-        <ul class="markListGroup">
-          <li class="markListItem" @click="addStrong" title="strong">
+        <div class="markListGroup">
+          <div class="markListItem" @click="addStrong" title="strong">
             <b>B</b>
-          </li>
-          <li class="markListItem" @click="addItalic" title="italic">
+          </div>
+          <div class="markListItem" @click="addItalic" title="italic">
             <i>I</i>
-          </li>
-          <li class="markListItem" @click="addStrikethrough" title="strikethrough">
+          </div>
+          <div class="markListItem" @click="addStrikethrough" title="strikethrough">
             <i class="fa fa-strikethrough" aria-hidden="true"></i>
-          </li>
-          <li class="markListItem" @click="addHTitle(1)" title="H1-title">H1</li>
-          <li class="markListItem" @click="addHTitle(2)" title="H2-title">H2</li>
-          <li class="markListItem" @click="addHTitle(3)" title="H3-title">H3</li>
-          <li class="markListItem" @click="addHTitle(4)" title="H4-title">H4</li>
-          <li class="markListItem" @click="addHTitle(5)" title="H5-title">H5</li>
-          <li class="markListItem" @click="addHTitle(6)" title="H6-title">H6</li>
-          <li class="markListItem" @click="addLine" title="line">一</li>
-          <li class="markListItem" @click="addQuote" title="quote">
+          </div>
+          <div class="markListItem" @click="addHTitle(1)" title="H1-title">H1</div>
+          <div class="markListItem" @click="addHTitle(2)" title="H2-title">H2</div>
+          <div class="markListItem" @click="addHTitle(3)" title="H3-title">H3</div>
+          <div class="markListItem" @click="addHTitle(4)" title="H4-title">H4</div>
+          <div class="markListItem" @click="addHTitle(5)" title="H5-title">H5</div>
+          <div class="markListItem" @click="addHTitle(6)" title="H6-title">H6</div>
+          <div class="markListItem" @click="addLine" title="line">一</div>
+          <div class="markListItem" @click="addQuote" title="quote">
             <i class="fa fa-quote-left" aria-hidden="true"></i>
-          </li>
-          <li class="markListItem" @click="addCode">
+          </div>
+          <div class="markListItem" @click="addCode">
             <i class="fa fa-code" aria-hidden="true"></i>
-          </li>
-          <li class="markListItem" @click="addLink">
+          </div>
+          <div class="markListItem" @click="addLink">
             <i class="fa fa-link" aria-hidden="true"></i>
-          </li>
-          <li class="markListItem" @click="addImage">
-            <i class="fa fa-picture-o" aria-hidden="true"></i>
-          </li>
-          <li class="markListItem" @click="addTable" title="table">
+          </div>
+          <div class="markListItem addImage" @mousemove="imageMove" @mouseleave="imageLeave">
+            <i class="fa fa-picture-o" style="margin-top:4px;" aria-hidden="true"></i>
+            <transition name="fade">
+              <div class="dropdown" v-if="image_dropdown_open">
+                <div class="dropdown-item" @click="addLinkImage">
+                  <span>添加图片链接</span>
+                </div>
+                <div class="dropdown-item" style="overflow: hidden">
+                  <input
+                    type="file"
+                    accept="image/gif, image/jpeg, image/jpg, image/png, image/svg"
+                    multiple="multiple"
+                    @change="addFileImage($event)"
+                  >上传图片
+                </div>
+                <template v-for="(item, index) in imageFiles">
+                  <div
+                    v-if="item"
+                    class="dropdown-item dropdown-images"
+                    :title="item.name"
+                    :key="index"
+                  >
+                    <span>{{item.name}}</span>
+                    <button
+                      slot="right"
+                      type="button"
+                      @click.stop="$imgDel(index)"
+                      class="delBtn fa fa-trash-o"
+                      aria-hidden="true"
+                      title="删除"
+                    ></button>
+                    <!-- 缩略图展示 -->
+                    <transition name="fade">
+                      <img class="image-show" :src="item.url" alt="none">
+                    </transition>
+                  </div>
+                </template>
+              </div>
+            </transition>
+          </div>
+          <div class="markListItem" @click="addTable" title="table">
             <i class="fa fa-table" aria-hidden="true"></i>
-          </li>
-          <li class="markListItem" @click="addUl" title="ul-list">
+          </div>
+          <div class="markListItem" @click="addUl" title="ul-list">
             <i class="fa fa-list-ul" aria-hidden="true"></i>
-          </li>
-          <li class="markListItem" @click="addOl" title="ol-list">
+          </div>
+          <div class="markListItem" @click="addOl" title="ol-list">
             <i class="fa fa-list-ol" aria-hidden="true"></i>
-          </li>
-          <li class="markListItem" @click="fullPageFn" title="fullpage">
+          </div>
+          <div class="markListItem" @click="fullPageFn" title="fullpage">
             <i class="fa fa-arrows-alt" aria-hidden="true"></i>
-          </li>
-          <li class="markListItem" @click="previewFn" title="preview">
+          </div>
+          <div class="markListItem" @click="previewFn" title="preview">
             <i class="fa fa-eye-slash" aria-hidden="true"></i>
-          </li>
-          <li class="markListItem" @click="previewAllFn" title="previewAll">
+          </div>
+          <div class="markListItem" @click="previewAllFn" title="previewAll">
             <i class="fa fa-eye" aria-hidden="true"></i>
-          </li>
-        </ul>
+          </div>
+        </div>
       </div>
     </div>
     <div class="mdBodyContainer" :class="[{noMenu:!navStatus},{mdBodyFullPage:fullPageStatus}]">
@@ -80,6 +117,7 @@ import range from "../../../src/utils/rangeFn";
 import Vue from "vue";
 
 import scroll from "vue-scroll";
+import { setTimeout } from "timers";
 
 Vue.use(scroll);
 
@@ -133,7 +171,8 @@ export default {
       icoStatus: Boolean(this.icoStatusP),
       maxEditScrollHeight: 0,
       maxPreviewScrollHeight: 0,
-      upImageArr: [],
+      image_dropdown_open: false,
+      imageFiles: [],
       index: -1
     };
   },
@@ -153,8 +192,44 @@ export default {
         evt.returnValue = false;
       }
     },
-    addImage: function() {
-      insertContent("![Vue](https://cn.vuejs.org/images/logo.png)", this);
+    imageMove() {
+      this.image_dropdown_open = true;
+    },
+    imageLeave() {
+      this.image_dropdown_open = false;
+    },
+    addLinkImage: function() {
+      insertContent("![Vue](https://cn.vuejs.org/images/logo.png)\n", this);
+      this.image_dropdown_open = false;
+    },
+    addFileImage($e) {
+      this.imageFilesAdd($e.target.files);
+      $e.target.value = ""; // 初始化
+    },
+    imageFilesAdd($files) {
+      for (let i = 0; i < $files.length; i++) {
+        this.$imgFileAdd($files[i]);
+      }
+    },
+    $imgFileAdd($file) {
+      this.$emit("imgAdd", $file);
+      this.image_dropdown_open = false;
+    },
+    $callbackAddImage(image) {
+      this.imageFiles.push(image);
+      insertContent(`![${image.name}](${image.url})\n`, this);
+    },
+    $imgDel(index) {
+      let currentImage = this.imageFiles[index];
+      let string = `![${currentImage.name}](${currentImage.url})\n`;
+      this.input = this.input.replace(string, "");
+      this.imageFiles.splice(index, 1);
+      let textareaDom = document.querySelector(".mdEditor");
+      range.setCaretPosition(textareaDom, 2);
+      this.$emit("delImage", currentImage);
+      if (this.imageFiles.length === 0) {
+        this.image_dropdown_open = false;
+      }
     },
     addHTitle: function(index) {
       let tmp = "";
@@ -319,6 +394,9 @@ export default {
           .replace(/\s+/g, " ")
           .replace("\n", "");
       };
+      renderer.image = (href, title, text) => {
+        return `<img src="${href}" title="${text}"/>`;
+      };
 
       let data = {};
       data.mdValue = this.input;
@@ -326,13 +404,6 @@ export default {
         sanitize: true,
         renderer: renderer
       });
-      this.upImageArr = [];
-      let _this = this;
-      document.querySelectorAll(".previewContainer img").forEach(n => {
-        _this.upImageArr.push(n.src.split("/").pop());
-      });
-
-      data.upImageArr = this.upImageArr;
       this.$emit("childevent", data);
     }
   },
@@ -368,7 +439,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .mdContainer {
   width: 100%;
   height: 100%;
@@ -398,7 +469,7 @@ export default {
       width: auto;
       height: 100%;
       margin-left: 0px;
-      ul.markListGroup {
+      .markListGroup {
         padding: 0;
         margin: auto;
         height: 100%;
@@ -406,7 +477,7 @@ export default {
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        li.markListItem {
+        .markListItem {
           list-style: none;
           width: 20px;
           height: 20px;
@@ -419,6 +490,88 @@ export default {
           color: #333;
           &:hover {
             background: #eee;
+          }
+        }
+        .addImage {
+          position: relative;
+          display: inline-block;
+          .fade-enter-active,
+          .fade-leave-active {
+            transition: opacity 0.5s;
+          }
+          .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+            opacity: 0;
+          }
+          .dropdown {
+            position: absolute;
+            left: -55px;
+            min-width: 130px;
+            background: #fff;
+            transition: all 0.2s linear 0s;
+            .dropdown-item {
+              position: relative;
+              height: 35px;
+              line-height: 35px;
+              font-size: 12px;
+              transition: all 0.2s linear 0s;
+              &:hover {
+                background: #eaeaea;
+              }
+              input {
+                position: absolute;
+                font-size: 100px;
+                max-height: 35px;
+                right: 0;
+                top: 0;
+                left: 0;
+                max-width: 130px;
+                opacity: 0;
+                cursor: pointer;
+              }
+            }
+            .dropdown-images {
+              &:hover {
+                .image-show {
+                  display: block;
+                }
+              }
+              .delBtn {
+                box-sizing: border-box;
+                display: inline-block;
+                cursor: pointer;
+                height: 28px;
+                width: 28px;
+                margin: 6px 0 5px 0px;
+                font-size: 15px;
+                padding: 4.5px 6px 5px 3.5px;
+                color: #757575;
+                border-radius: 5px;
+                text-align: center;
+                background: none;
+                border: none;
+                outline: none;
+                line-height: 1;
+                vertical-align: middle;
+              }
+              button {
+                position: absolute;
+                right: 5px;
+                &:hover {
+                  color: #db2828;
+                }
+              }
+              .image-show {
+                display: none;
+                position: absolute;
+                left: -122px;
+                top: 0;
+                -webkit-transition: all 0.3s linear 0s;
+                transition: all 0.3s linear 0s;
+                width: 120px;
+                height: 90px;
+                border: 1px solid #eeece8;
+              }
+            }
           }
         }
       }
