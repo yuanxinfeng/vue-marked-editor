@@ -33,7 +33,7 @@
             <transition name="fade">
               <div class="dropdown" v-if="image_dropdown_open">
                 <div class="dropdown-item" @click="addLinkImage">
-                  <span>添加图片链接</span>
+                  <span class="span_center">添加图片链接</span>
                 </div>
                 <div class="dropdown-item" style="overflow: hidden">
                   <input
@@ -41,7 +41,8 @@
                     accept="image/gif, image/jpeg, image/jpg, image/png, image/svg"
                     multiple="multiple"
                     @change="addFileImage($event)"
-                  >上传图片
+                  >
+                  <span class="span_center">上传图片</span>
                 </div>
                 <template v-for="(item, index) in imageFiles">
                   <div
@@ -514,6 +515,10 @@ export default {
               line-height: 35px;
               font-size: 12px;
               transition: all 0.2s linear 0s;
+              .span_center{
+                display: block;
+                text-align: center;
+              }
               &:hover {
                 background: #eaeaea;
               }

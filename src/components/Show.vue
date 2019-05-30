@@ -29,6 +29,7 @@ export default {
     };
   },
   created() {
+    this.desc="";
     this.$nextTick(() => {});
   },
   mounted() {},
