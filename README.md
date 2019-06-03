@@ -7,6 +7,7 @@
 ```shell
 $ npm install --save vue-marked-editor
 ```
+
 ## Quick Start
 
 ```javascript
@@ -16,9 +17,27 @@ import "vue-marked-editor/vue-marked-editor.css";
 
 Vue.use(vueMarkedEditor);
 ```
+
+```html
+<y-markdown
+  ref="markdown"
+  :mdValuesP="value"
+  :fullPageStatusP="false"
+  :editStatusP="true"
+  :previewStatusP="true"
+  :navStatusP="true"
+  :icoStatusP="true"
+  @childevent="childEventHandler"
+  @imgAdd="imgAdd"
+  @delImage="delIMage"
+></y-markdown>
+```
+
 ## LICENSE
+
 [MIT](LICENSE)
 
 ## GITHUB
+
 [vue-marked-editor](https://github.com/MoziWriteCode/vue-marked-editor)
 Welcome to star !!!

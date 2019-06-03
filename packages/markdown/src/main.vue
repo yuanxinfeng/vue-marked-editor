@@ -130,7 +130,7 @@ marked.setOptions({
   tables: true,
   breaks: true,
   pedantic: false,
-  sanitize: false,
+  sanitize: true,
   smartLists: true,
   smartypants: false,
   highlight: function(code) {
@@ -173,6 +173,7 @@ export default {
       maxEditScrollHeight: 0,
       maxPreviewScrollHeight: 0,
       image_dropdown_open: false,
+      compiledMarkdown: "",
       imageFiles: [],
       index: -1
     };
@@ -381,7 +382,7 @@ export default {
       };
       renderer.link = (href, title, text) => {
         return `<a href="${href}"
-             target="${href.substr(0, 1) === "#" ? "_self" : "_blank"}" 
+             target="${href.substr(0, 1) === "#" ? "_self" : "_blank"}"
              class="${href.substr(0, 1) === "#" ? "" : "c-link"}"
              title="访问 ${text} | Welcome to Pawn's blog!">
              ${
@@ -398,40 +399,36 @@ export default {
       renderer.image = (href, title, text) => {
         return `<img src="${href}" title="${text}"/>`;
       };
-
       let data = {};
       data.mdValue = this.input;
-      data.htmlValue = marked(this.input, {
+      this.compiledMarkdown = data.htmlValue = marked(this.input, {
         sanitize: true,
         renderer: renderer
       });
-      this.$emit("childevent", data);
-    }
-  },
-  computed: {
-    compiledMarkdown: function() {
-      return marked(this.input, {
-        sanitize: true
-      });
-    }
-  },
-  watch: {
-    input: function() {
-      this.watchData();
-      let maxEditScrollHeight =
-        document.querySelector(".mdEditor").scrollHeight -
-        document.querySelector(".mdEditor").clientHeight;
-      let maxPreviewScrollHeight =
-        document.querySelector(".previewContainer").scrollHeight -
-        document.querySelector(".previewContainer").clientHeight;
-      this.maxEditScrollHeight = maxEditScrollHeight;
-      this.maxPreviewScrollHeight = maxPreviewScrollHeight;
+      setTimeout(() => {
+        let maxEditScrollHeight =
+          document.querySelector(".mdEditor").scrollHeight -
+          document.querySelector(".mdEditor").clientHeight;
+        let maxPreviewScrollHeight =
+          document.querySelector(".previewContainer").scrollHeight -
+          document.querySelector(".previewContainer").clientHeight;
+        this.maxEditScrollHeight = maxEditScrollHeight;
+        this.maxPreviewScrollHeight = maxPreviewScrollHeight;
+      }, 100);
 
       marked.setOptions({
         highlight: function(code) {
           return hljs.highlightAuto(code).value;
         }
       });
+      this.$emit("childevent", data);
+    }
+  },
+  watch: {
+    input: function(val, oldval) {
+      if (!oldval) {
+      }
+      this.watchData();
     },
     mdValuesP: function(val) {
       this.input = val;
