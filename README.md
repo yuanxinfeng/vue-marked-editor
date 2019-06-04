@@ -39,5 +39,5 @@ Vue.use(vueMarkedEditor);
 
 ## GITHUB
 
-[vue-marked-editor](https://github.com/MoziWriteCode/vue-marked-editor)
+[vue-marked-editor](https://github.com/yuanxinfeng/vue-marked-editor)
 Welcome to star !!!
